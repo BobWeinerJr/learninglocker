@@ -237,7 +237,7 @@ border-color: #354b59;
   position:absolute;
   bottom:0px;
   left:0;
-  height:56px;
+  height:60px;
   background:#222;
   width:240px;
   padding:10px 10px 10px 20px;
@@ -251,6 +251,7 @@ border-color: #354b59;
 
 #sidebar #footer p.powered-by, #sidebar #footer p.powered-by a {
   color:#999;
+  padding-bottom:10px;
 }
 
 #sidebar #footer .footer-links {
@@ -433,7 +434,7 @@ border-color: #354b59;
   margin: 5px;
   padding: 10px;
   float: left;
-  min-height:140px;
+  min-height:190px;
 }
 
 .badge-container img{
@@ -588,6 +589,15 @@ border-color: #354b59;
 .verb-graph-content {
   padding-top:10px;
   margin-left:65px;
+}
+
+/* App styles
+------------------------------------------------------*/
+
+ul.app-listing li {
+  padding:6px 0 6px 0;
+  border-bottom:1px solid #f1f1f1;
+  margin:3px 0 3px 0;
 }
 
 
