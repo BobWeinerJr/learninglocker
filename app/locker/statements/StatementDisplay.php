@@ -104,8 +104,9 @@ class StatementDisplay {
 
   private function setActivity( $activity, $return_type='table' ){
 
+    $name = isset($activity['definition']['name']) ? reset( $activity['definition']['name'] ) : $activity['id'];
     $display = array('title'   => 'Activity',
-                     'display' => reset( $activity['definition']['name'] ),
+                     'display' => $name,
                      'url'     => \URL::current() . '/activity/' . rawurlencode( $activity['id'] ));
 
     return $this->setDisplayRow( $display, $return_type );
@@ -128,9 +129,10 @@ class StatementDisplay {
   private function setScore( $result, $return_type='table' ){
 
     if( isset($result['score']['scaled']) ){
+      $percentage = round( $result['score']['scaled'] * 100 );
 
       $display = array('title'   => 'Score',
-                       'display' => substr($result['score']['scaled'], 1) . '%');
+                       'display' => $percentage . '%');
 
       return $this->setDisplayRow( $display, $return_type );
       
@@ -138,10 +140,14 @@ class StatementDisplay {
 
     if( isset($result['score']['raw']) ){
 
-      $max = $result['score']['max'];
       $raw = $result['score']['raw'];
+      $text = $raw;
+      if( isset($result['score']['max']) ){
+        $max = $result['score']['max'];
+        $text.= ' out of '.$max;
+      }
       $display = array('title'   => 'Score',
-                       'display' => $raw .' out of '. $max);
+                       'display' => $text);
 
       return $this->setDisplayRow( $display, $return_type );
       
@@ -164,7 +170,7 @@ class StatementDisplay {
 
   private function setCourse( $context, $lrs, $return_type='table' ){
 
-    if( isset($context['contextActivities']['grouping']) &&
+    if( isset($context['contextActivities']['grouping']['type']) &&
       $context['contextActivities']['grouping']['type'] == 'http://adlnet.gov/expapi/activities/course' ){
 
       $name    = reset( $context['contextActivities']['grouping']['definition']['name'] );

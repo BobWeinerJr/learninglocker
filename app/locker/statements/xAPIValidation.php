@@ -477,10 +477,10 @@ class xAPIValidation {
 
       //check definition, if set, is an object
       if( isset($object['definition']) ){
+        //\App::abort(400, $object['definition']);
         if( !is_array($object['definition']) ){
           $this->setError( 'Object: definition needs to be an object.' );
         }
-      }else{
 
         $definition = $object['definition'];
         $definition_keys = array_keys( $definition );
@@ -728,27 +728,44 @@ class xAPIValidation {
           }
 
           //now check all property keys contain an array
+          //While the contextActivity may be an object on input, it must be stored as an array - so on each type we will check if an associative array has been passed and insert it into an array if needed
           if( isset($context['contextActivities']['parent']) ){
             if( !is_array($context['contextActivities']['parent']) ){
               $this->setError( 'Context: contextActivities: parent must be an object or array of objects.' );
+            } else { 
+              if( $this->isAssoc( $this->$context['contextActivities']['parent'] ) ){ 
+                $this->statement['context']['contextActivities']['parent'] = array( $this->$context['contextActivities']['parent'] );
+              }
             }
           }
 
           if( isset($context['contextActivities']['grouping']) ){
             if( !is_array($context['contextActivities']['grouping']) ){
               $this->setError( 'Context: contextActivities: grouping must be an object or array of objects.' );
+            } else {
+              if( $this->isAssoc( $this->$context['contextActivities']['grouping'] ) ){
+                $this->statement['context']['contextActivities']['grouping'] = array( $this->$context['contextActivities']['grouping'] );
+              }
             }
           }
 
           if( isset($context['contextActivities']['category']) ){
             if( !is_array($context['contextActivities']['category']) ){
               $this->setError( 'Context: contextActivities: category must be an object or array of objects.' );
+            } else {
+              if( $this->isAssoc( $this->$context['contextActivities']['category'] ) ){
+                $this->statement['context']['contextActivities']['category'] = array( $this->$context['contextActivities']['category'] );
+              }
             }
           }
 
           if( isset($context['contextActivities']['other']) ){
             if( !is_array($context['contextActivities']['other']) ){
               $this->setError( 'Context: contextActivities: other must be an object or array of objects.' );
+            } else {
+              if( $this->isAssoc( $this->$context['contextActivities']['other'] ) ){
+                $this->statement['context']['contextActivities']['other'] = array( $this->$context['contextActivities']['other'] );
+              }
             }
           }
         }
@@ -889,8 +906,10 @@ class xAPIValidation {
             if( !is_numeric($result['score']['min']) ){
               $this->setError( 'Result: score: min must be a numeric value.' );
             }
-            if( $result['score']['min'] > $result['score']['max'] ){
-              $this->setError( 'Result: score: min must be less than max.' );
+            if( isset($result['score']['max'])){
+              if( $result['score']['min'] > $result['score']['max'] ){
+                $this->setError( 'Result: score: min must be less than max.' );
+              }
             }
           }
           if( isset($result['score']['raw']) ){
@@ -1265,6 +1284,17 @@ class xAPIValidation {
   */
   private function validateLanguageMap(){
     
+  }
+
+
+  /**
+   * Returns true if an array is associative 
+   * @param  Array  $arr 
+   * @return boolean      
+   */
+  private function isAssoc($arr)
+  {
+    return array_keys($arr) !== range(0, count($arr) - 1);
   }
 
 }
