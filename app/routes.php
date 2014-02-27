@@ -208,6 +208,7 @@ Route::get('lrs/{id}/statements/explorer/{extra?}', 'ExplorerController@explore'
 ->where(array('extra' => '.*'));
 Route::get('lrs/{id}/statements/{extra}', 'ExplorerController@filter')
 ->where(array('extra' => '.*'));
+
 Route::resource('statements', 'StatementController');
 
 /*
@@ -258,17 +259,18 @@ Route::group( array('prefix' => 'data/xAPI/', 'before'=>'auth.statement'), funct
     });
 
   //statement resource (post, put, get, delete) route
-  Route::put('statements',      'Controllers\xAPI\StatementsController@storePut');
-  Route::resource('statements', 'Controllers\xAPI\StatementsController');
+  Route::get('statements/grouped',    'Controllers\xAPI\StatementsController@grouped');
+  Route::put('statements',            'Controllers\xAPI\StatementsController@storePut');
+  Route::resource('statements',       'Controllers\xAPI\StatementsController');
 
   //Agent API
-  Route::get('agents/profile',    'Controllers\xAPI\AgentController@index');
-  Route::put('agents/profile',    'Controllers\xAPI\AgentController@store');
-  Route::post('agents/profile',   'Controllers\xAPI\AgentController@store');
-  Route::delete('agents/profile', 'Controllers\xAPI\AgentController@delete');
-  Route::any('agents/profile',    'Controllers\xAPI\AgentController@index');
+  Route::get('agents/profile',        'Controllers\xAPI\AgentController@index');
+  Route::put('agents/profile',        'Controllers\xAPI\AgentController@store');
+  Route::post('agents/profile',       'Controllers\xAPI\AgentController@store');
+  Route::delete('agents/profile',     'Controllers\xAPI\AgentController@delete');
+  Route::any('agents/profile',        'Controllers\xAPI\AgentController@index');
 
-  Route::get('agents',            'Controllers\xAPI\AgentController@search');
+  Route::get('agents',                'Controllers\xAPI\AgentController@search');
 
   //Activiy API
   Route::get('activities/profile',    'Controllers\xAPI\ActivityController@index');
@@ -280,11 +282,11 @@ Route::group( array('prefix' => 'data/xAPI/', 'before'=>'auth.statement'), funct
   Route::get('activities',            'Controllers\xAPI\ActivityController@full');
 
   //State API
-  Route::get('activities/state',    'Controllers\xAPI\StateController@index');
-  Route::put('activities/state',    'Controllers\xAPI\StateController@store');
-  Route::post('activities/state',   'Controllers\xAPI\StateController@store');
-  Route::delete('activities/state', 'Controllers\xAPI\StateController@delete');
-  Route::any('activities/state',    'Controllers\xAPI\StateController@index');
+  Route::get('activities/state',      'Controllers\xAPI\StateController@index');
+  Route::put('activities/state',      'Controllers\xAPI\StateController@store');
+  Route::post('activities/state',     'Controllers\xAPI\StateController@store');
+  Route::delete('activities/state',   'Controllers\xAPI\StateController@delete');
+  Route::any('activities/state',      'Controllers\xAPI\StateController@index');
   
 
 });
@@ -304,6 +306,51 @@ Route::group( array('prefix' => 'api/v1', 'before'=>'auth.api'), function(){
   });
 
 });
+
+/*
+|----------------------------------------------------------------------
+| oAuth handling
+|----------------------------------------------------------------------
+*/
+
+Route::resource('oauth/apps','OAuthAppController');
+
+Route::post('oauth/access_token', function(){
+    return AuthorizationServer::performAccessTokenFlow();
+});
+
+Route::get('oauth/authorize', array('before' => 'check-authorization-params|auth', function(){
+   
+  $params = Session::get('authorize-params');
+  $params['user_id'] = Auth::user()->id;
+  $app_details = \OAuthApp::where('client_id', $params['client_id'] )->first();
+  return View::make('partials.oauth.forms.authorization-form', array('params'      => $params, 
+                                                                     'app_details' => $app_details));
+
+}));
+
+Route::post('oauth/authorize', array('before' => 'check-authorization-params|auth|csrf', function(){
+  
+  $params = Session::get('authorize-params');
+  $params['user_id'] = Auth::user()->id;
+
+  if (Input::get('approve') !== null) {
+    $code = AuthorizationServer::newAuthorizeRequest('user', $params['user_id'], $params);
+    Session::forget('authorize-params');
+    return Redirect::to(AuthorizationServer::makeRedirectWithCode($code, $params));
+  }
+
+  if (Input::get('deny') !== null) {
+    Session::forget('authorize-params');
+    return Redirect::to(AuthorizationServer::makeRedirectWithError($params));
+  }
+
+}));
+
+Route::get('secure-route', array('before' => 'oauth:basic', function(){
+    return "oauth secured route ";
+}));
+
 
 
 /*
