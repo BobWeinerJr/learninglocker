@@ -1,42 +1,12 @@
-Learning Locker
-================
+[![Learning Locker Logo](https://i.imgur.com/hP1yFKL.png)](http://learninglocker.net)
+> An open source Learning Record Store (LRS) implementing the [xAPI](https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md) ([Tin Can API](http://tincanapi.com/)).
 
-Learning Locker is an open source Learning Record Store (LRS).
+[![Build Status](https://travis-ci.org/LearningLocker/learninglocker.svg?branch=master)](https://travis-ci.org/LearningLocker/learninglocker)
+[![License](https://poser.pugx.org/learninglocker/learninglocker/license.svg)](http://opensource.org/licenses/GPL-3.0)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/LearningLocker/learninglocker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Homepage: http://learninglocker.net
+*Learning Locker is copyright [Learning Pool](https://learningpool.com/)*
 
-THIS IS PRE-ALPHA AND NOT READY TO BE USED IN PRODUCTION. We will announce the first official release on the product website.
+Please see our [documentation](http://docs.learninglocker.net) for installation, configuration, and usage instructions.
 
-## Basic requirements
-
-Learning Locker requires PHP 5.4+ with the MongoDB extension, MongoDB and Apache. It is built using a range of additional components, listed below.
-
-## Official Documentation
-
-Check out the [wiki pages](https://github.com/learninglocker/learninglocker/wiki) to install and begin using Learning Locker.
-
-### License
-
-Learning Locker is open source software licensed under the [GPL v3](http://opensource.org/licenses/GPL-3.0)
-
-### Contributing To Learning Locker
-
-There are several ways you can get involved with Learning Locker. Visit our site to find out more http://learninglocker.net/community/
-
-#### Contributors
-
-* HT2 (http://ht2.co.uk)
-* Dave Tosh (http://davetosh.com)
-* James Mullaney [mailto:james@ht2.co.uk](james@ht2.co.uk)
-
-#### Copyright
-
-Learning Locker is copyright HT2 (http://ht2.co.uk)
-
-#### Open Source components
-
-* Laravel (http://laravel.com)
-* Twitter Bootstrap (http://getbootstrap.com)
-* MongoDB (http://www.mongodb.org/)
-* MongoDB support for Laravel (https://github.com/jenssegers/Laravel-MongoDB)
-* Morris.js Graphs (https://github.com/oesmith/morris.js)
+You can also [register your Learning Locker](https://learningpool.com/register-locker) or get [Learning Locker Data Cloud](https://learningpool.com/solutions/learning-record-store-learning-locker).
